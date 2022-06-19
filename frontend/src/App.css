@@ -2,9 +2,32 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.nav-ul {
+  background-color: #0c3f24;
+  padding: 5px;
+  margin: 0;
+}
+
+.nav-ul li {
+  display: inline-block;
+  padding: 5px;
+  margin: 0;
+}
+
+.nav-ul li a {
+  text-decoration: none;
+  color: white;
+}
+
+.footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  color: white;
+  background-color: #0c3f24;
+  padding: 10px;
+  margin: 0;
+  text-align: center;
 }
 
 @media (prefers-reduced-motion: no-preference) {
