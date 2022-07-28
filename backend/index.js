@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.post("/register", async (req, res) => {
   const user = new User(req.body);
-  const result = user.save();
+  const result = await user.save();
   res.send(result);
 });
 
