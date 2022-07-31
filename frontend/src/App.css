@@ -3,14 +3,14 @@
 }
 
 .nav-ul {
-  background-color: #0c3f24;
+  background-color: #80558c;
   padding: 5px;
   margin: 0;
 }
 
 .nav-ul li {
   display: inline-block;
-  padding: 5px;
+  padding: 10px;
   margin: 0;
 }
 
@@ -24,7 +24,7 @@
   position: absolute;
   bottom: 0;
   color: white;
-  background-color: #0c3f24;
+  background-color: #80558c;
   padding: 10px;
   margin: 0;
   text-align: center;
@@ -34,28 +34,44 @@
   margin-left: 30%;
 }
 
+.login {
+  margin-left: 30%;
+}
+
 .inputBox {
   display: block;
   margin: 25px;
   padding: 7px;
   width: 300px;
-  border: 2px solid #0c3f24;
+  border: 2px solid #af7ab3;
   /* 
   display: block;
   /* text-align: center; */
 }
 
 .saveButton {
-  /* display: block; */
+  display: block;
   margin: 25px;
   padding: 7px;
-  width: 150px;
-  border: 2px solid #0c3f24;
+  width: 318px;
+  border: 2px solid #80558c;
   cursor: pointer;
-  /* 
+  background-color: #ffffff;
+  color: #80558c;
+  font-weight: 700;
+}
 
-  display: block;
-  /* text-align: center; */
+
+.saveButton:hover {
+  /* display: block;
+  margin: 25px;
+  padding: 7px;
+  width: 318px;
+  border: 2px solid #80558c;
+  cursor: pointer;
+  font-weight: 700; */
+  background-color: #80558c;
+  color: white;
 }
 
 @media (prefers-reduced-motion: no-preference) {

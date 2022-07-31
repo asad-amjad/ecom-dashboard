@@ -16,7 +16,6 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  console.log();
   let user = await User.findOne(req.body).select("-password");
   if (req.body.email && req.body.password) {
     if (user) {

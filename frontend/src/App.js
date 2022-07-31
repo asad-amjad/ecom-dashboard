@@ -4,6 +4,7 @@ import Nav from "./Layout/Nav";
 import Footer from "./Layout/Footer";
 import SignUp from "./Pages/SignUp";
 import PrivateRoute from "./Utils/PrivateRoute";
+import Login from "./Pages/Login";
 import "./App.css";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           </Route>
 
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
       <Footer />
