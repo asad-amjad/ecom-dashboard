@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
@@ -16,10 +16,16 @@ const SignUp = () => {
       },
     });
     result = await result.json();
-    console.log(result);
     localStorage.setItem("user", JSON.stringify(result));
     navigate("/");
   };
+
+  useEffect(() => {
+    const auth = localStorage.getItem("user");
+    if (auth) {
+      navigate("/");
+    }
+  });
 
   return (
     <div className="register">
