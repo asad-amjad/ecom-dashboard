@@ -7,39 +7,40 @@ const Nav = () => {
     localStorage.clear();
     navigate("/signup");
   };
-
   return (
-    <ul className="nav-ul">
-      <li>
-        <Link to="/">Home</Link>
-      </li>
-      <li>
-        <Link to="/add">Add Product</Link>
-      </li>
-      <li>
-        <Link to="/update">Update Product</Link>
-      </li>
-      <li>
-        <Link to="/profile">Profile</Link>
-      </li>
+    <div>
+      <img className="brand-logo" src="https://static.vecteezy.com/system/resources/previews/002/820/442/original/aa-logo-monogram-modern-design-template-free-vector.jpg" alt=''/>
       {auth ? (
-        <li>
-          <Link onClick={logout} to="/login">
-            Logout
-          </Link>
-        </li>
+        <ul className="nav-ul">
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/add">Add Product</Link>
+          </li>
+          <li>
+            <Link to="/update">Update Product</Link>
+          </li>
+          <li>
+            <Link to="/profile">Profile</Link>
+          </li>
+          <li>
+            <Link onClick={logout} to="/login">
+              Logout ({JSON.parse(auth).name})
+            </Link>
+          </li>
+        </ul>
       ) : (
-        <>
+        <ul className="nav-ul nav-right">
           <li>
             <Link to="/login">Log in</Link>
           </li>
           <li>
             <Link to="/signup">Sign Up</Link>
           </li>
-        </>
+        </ul>
       )}
-    </ul>
+    </div>
   );
 };
-
 export default Nav;

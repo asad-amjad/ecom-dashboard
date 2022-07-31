@@ -19,6 +19,17 @@
   color: white;
 }
 
+.nav-right {
+  text-align: right;
+}
+
+.brand-logo {
+  margin: 4px;
+  width: 45px;
+  float: left;
+  border-radius: 50%;
+}
+
 .footer {
   width: 100%;
   position: absolute;
@@ -44,9 +55,6 @@
   padding: 7px;
   width: 300px;
   border: 2px solid #af7ab3;
-  /* 
-  display: block;
-  /* text-align: center; */
 }
 
 .saveButton {
@@ -61,15 +69,7 @@
   font-weight: 700;
 }
 
-
 .saveButton:hover {
-  /* display: block;
-  margin: 25px;
-  padding: 7px;
-  width: 318px;
-  border: 2px solid #80558c;
-  cursor: pointer;
-  font-weight: 700; */
   background-color: #80558c;
   color: white;
 }
