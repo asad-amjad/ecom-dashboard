@@ -29,7 +29,10 @@
   float: left;
   border-radius: 50%;
 }
-
+.invalid-message{
+  color: red;
+  margin: -25px 25px 25px
+}
 .footer {
   width: 100%;
   position: absolute;
