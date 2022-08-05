@@ -35,4 +35,14 @@ app.post("/add_product", async (req, res) => {
   res.send(result);
 });
 
+app.get("/products", async (req, res) => {
+  const products = await Product.find();
+
+  if (products.length > 0) {
+    res.send(products);
+  } else {
+    res.send({ result: "Mo products fount" });
+  }
+});
+
 app.listen(5000);

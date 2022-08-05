@@ -29,10 +29,27 @@
   float: left;
   border-radius: 50%;
 }
-.invalid-message{
+
+.invalid-message {
   color: red;
-  margin: -25px 25px 25px
+  margin: -25px 25px 25px;
 }
+
+.product-list {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.product-list ul li {
+  display: inline-block;
+  border: 1px solid black;
+  padding: 5ps;
+  width: 140px;
+}
+.product-list ul {
+  margin: 0;
+}
+
 .footer {
   width: 100%;
   position: absolute;
