@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -45,7 +45,8 @@ const ProductList = () => {
             <li>$ {product.price}</li>
             <li>{product.company}</li>
             <li>
-              <button onClick={() => deleteProduct(product._id)}>Remove</button>
+              <button onClick={() => deleteProduct(product._id)}>Remove</button>{" "}
+              <Link to={`/update/${product._id}`}>Edit</Link>
             </li>
           </ul>
         );

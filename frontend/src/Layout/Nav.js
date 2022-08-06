@@ -9,7 +9,11 @@ const Nav = () => {
   };
   return (
     <div>
-      <img className="brand-logo" src="https://static.vecteezy.com/system/resources/previews/002/820/442/original/aa-logo-monogram-modern-design-template-free-vector.jpg" alt=''/>
+      <img
+        className="brand-logo"
+        src="https://static.vecteezy.com/system/resources/previews/002/820/442/original/aa-logo-monogram-modern-design-template-free-vector.jpg"
+        alt=""
+      />
       {auth ? (
         <ul className="nav-ul">
           <li>
@@ -17,9 +21,6 @@ const Nav = () => {
           </li>
           <li>
             <Link to="/add">Add Product</Link>
-          </li>
-          <li>
-            <Link to="/update">Update Product</Link>
           </li>
           <li>
             <Link to="/profile">Profile</Link>
