@@ -6,7 +6,7 @@ const ProductList = () => {
   const [search, setSearch] = useState("");
 
   const fetchPrducts = async () => {
-    let result = await fetch("http://localhost:5000/products", {
+    let result = await fetch("http://localhost:5000/product", {
       method: "get",
       headers: {
         authorization: `bearer ${JSON.parse(localStorage.getItem("token"))}`,
@@ -21,14 +21,14 @@ const ProductList = () => {
   }, []);
 
   const deleteProduct = async (id) => {
-    let result = await fetch(`http://localhost:5000/product/${id}`, {
+    let result = await fetch(`http://localhost:5000/product/${id}/delete`, {
       method: "Delete",
       headers: {
         authorization: `bearer ${JSON.parse(localStorage.getItem("token"))}`,
       },
     });
     result = await result.json();
-    if (result) {
+    if (result.message == "Success") {
       fetchPrducts();
     }
   };
@@ -37,7 +37,7 @@ const ProductList = () => {
     setSearch(e.target.value);
     if (e.target.value) {
       let result = await fetch(
-        `http://localhost:5000/search/${e.target.value}`,
+        `http://localhost:5000/product/${e.target.value}/search`,
         {
           method: "get",
           headers: {

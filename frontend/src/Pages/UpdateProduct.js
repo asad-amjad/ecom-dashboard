@@ -37,14 +37,19 @@ const UpdateProduct = () => {
     } else {
       setError(false);
       const userId = JSON.parse(localStorage.getItem("user"))._id;
-      let result = await fetch(`http://localhost:5000/update/${param.id}`, {
-        method: "put",
-        body: JSON.stringify({ name, category, price, company, userId }),
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `bearer ${JSON.parse(localStorage.getItem("token"))}`,
-        },
-      });
+      let result = await fetch(
+        `http://localhost:5000/product/${param.id}/update`,
+        {
+          method: "put",
+          body: JSON.stringify({ name, category, price, company, userId }),
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          },
+        }
+      );
       result = await result.json();
       if (result) {
         navigate("/");
