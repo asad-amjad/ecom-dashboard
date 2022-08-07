@@ -15,6 +15,9 @@ const UpdateProduct = () => {
   const fetchPrduct = async (id) => {
     let result = await fetch(`http://localhost:5000/product/${id}`, {
       method: "get",
+      headers: {
+        authorization: `bearer ${JSON.parse(localStorage.getItem("token"))}`,
+      },
     });
     result = await result.json();
     const { name, category, price, company } = result;
@@ -39,6 +42,7 @@ const UpdateProduct = () => {
         body: JSON.stringify({ name, category, price, company, userId }),
         headers: {
           "Content-Type": "application/json",
+          authorization: `bearer ${JSON.parse(localStorage.getItem("token"))}`,
         },
       });
       result = await result.json();

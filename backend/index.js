@@ -95,7 +95,7 @@ app.get("/search/:key", verifyToken, async (req, res) => {
 });
 
 function verifyToken(req, res, next) {
-  const token = req.headers["authorization"];
+  let token = req.headers["authorization"];
   if (token) {
     token = token.split(" ")[1];
     Jwt.verify(token, jwtKey, (err, valid) => {
