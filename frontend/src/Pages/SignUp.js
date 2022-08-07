@@ -8,7 +8,7 @@ const SignUp = () => {
 
   const navigate = useNavigate();
   const submit = async () => {
-    let result = await fetch("http://localhost:5000/register", {
+    let result = await fetch("http://localhost:5000/user/register", {
       method: "post",
       body: JSON.stringify({ name, email, password }),
       headers: {
@@ -16,15 +16,17 @@ const SignUp = () => {
       },
     });
     result = await result.json();
-    localStorage.setItem("user", JSON.stringify(result.result));
-    localStorage.setItem("token", JSON.stringify(result.auth));
-    navigate("/");
+    if (result.userDetail) {
+      localStorage.setItem("user", JSON.stringify(result.userDetail));
+      // localStorage.setItem("token", JSON.stringify(result.auth));
+      navigate("/");
+    }
   };
 
   useEffect(() => {
     const auth = localStorage.getItem("user");
     if (auth) {
-      navigate("/");
+      // navigate("/");
     }
   });
 

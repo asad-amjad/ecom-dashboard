@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  
   const navigate = useNavigate();
 
   const submit = async () => {
-    let result = await fetch("http://localhost:5000/login", {
+    let result = await fetch("http://localhost:5000/user/login", {
       method: "post",
       body: JSON.stringify({ email, password }),
       headers: {
@@ -16,14 +16,19 @@ const Login = () => {
       },
     });
     result = await result.json();
-    if (result.auth) {
-      localStorage.setItem("user", JSON.stringify(result.user));
-      localStorage.setItem("token", JSON.stringify(result.auth));
+    if (result.userDetail) {
+      localStorage.setItem("user", JSON.stringify(result.userDetail));
       navigate("/");
-    } else {
-      console.log("nnnnnn");
-      alert("Please Enter correct information");
     }
+
+    // if (result.auth) {
+    //   localStorage.setItem("user", JSON.stringify(result.user));
+    //   localStorage.setItem("token", JSON.stringify(result.auth));
+    //   navigate("/");
+    // } else {
+    //   console.log("nnnnnn");
+    //   alert("Please Enter correct information");
+    // }
   };
 
   useEffect(() => {
