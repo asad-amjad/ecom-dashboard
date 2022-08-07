@@ -25,6 +25,9 @@ const AddProduct = () => {
         },
       });
       result = await result.json();
+      if (result) {
+        navigate("/");
+      }
     }
   };
 
