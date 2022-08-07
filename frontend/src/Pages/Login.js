@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const navigate = useNavigate();
 
   const submit = async () => {
@@ -16,14 +16,14 @@ const Login = () => {
       },
     });
     result = await result.json();
-    if (result.userDetail) {
-      localStorage.setItem("user", JSON.stringify(result.userDetail));
+    if (result.userDetails) {
+      localStorage.setItem("user", JSON.stringify(result.userDetails));
+      localStorage.setItem("accessToken", JSON.stringify(result.accessToken));
       navigate("/");
     }
 
     // if (result.auth) {
     //   localStorage.setItem("user", JSON.stringify(result.user));
-    //   localStorage.setItem("token", JSON.stringify(result.auth));
     //   navigate("/");
     // } else {
     //   console.log("nnnnnn");

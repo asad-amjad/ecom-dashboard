@@ -16,9 +16,9 @@ const SignUp = () => {
       },
     });
     result = await result.json();
-    if (result.userDetail) {
-      localStorage.setItem("user", JSON.stringify(result.userDetail));
-      // localStorage.setItem("token", JSON.stringify(result.auth));
+    if (result.userDetails) {
+      localStorage.setItem("user", JSON.stringify(result.userDetails));
+      localStorage.setItem("accessToken", JSON.stringify(result.accessToken));
       navigate("/");
     }
   };
