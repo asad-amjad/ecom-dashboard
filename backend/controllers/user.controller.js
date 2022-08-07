@@ -1,4 +1,6 @@
 const Model = require("../models/user");
+const bcrypt = require("bcryptjs");
+const salt = bcrypt.genSaltSync(10);
 
 exports.add = function (req, res) {
   const userDetails = req.body;
@@ -12,7 +14,7 @@ exports.add = function (req, res) {
     const newUser = new Model({
       email: userDetails.email,
       name: userDetails.name,
-      password: password,
+      password: bcrypt.hashSync(password, salt),
     });
     newUser.save((err, userDetail) => {
       if (err) return res.json(err);
@@ -30,10 +32,22 @@ exports.login = function (req, res, next) {
       res.status(500).json({ message: err });
       return;
     }
-    if (userDetail) {
-      res.status(200).send({ userDetail });
-    } else {
+
+    if (!userDetail) {
       return res.status(404).json({ message: "User Not found." });
     }
+
+    // check password;
+    if (!bcrypt.compareSync(password, userDetail.password)) {
+      return res.status(401).send({
+        accessToken: null,
+        message: "Invalid Password!",
+      });
+    }
+
+    res.status(200).send({
+      accessToken: null,
+      userDetail: userDetail,
+    });
   });
 };
