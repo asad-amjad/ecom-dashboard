@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -19,97 +19,139 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import Helpers from '../../utils/Helpers'
 
 const Actions = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const navigate = useNavigate()
+  const [name, setName] = useState('')
+  const [category, setCategory] = useState('')
+  const [price, setPrice] = useState('')
+  const [company, setCompany] = useState('')
+  const [action, setAction] = useState('ADD')
+  const [error, setError] = useState(false)
 
-  const handleSubmit = () => {
-    Helpers.axiosPostCall(`/user/login`, { email, password }).then((response) => {
-      if (response.accessToken) {
-        localStorage.setItem('accessToken', JSON.stringify(response.accessToken)), navigate('/')
-      }
+  const navigate = useNavigate()
+  const param = useParams()
+
+  const fetchPrduct = (id) => {
+    Helpers.axiosGetCall(`/product/${id}`).then((response) => {
+      const { name, category, price, company } = response
+      setName(name)
+      setCategory(category)
+      setPrice(price)
+      setCompany(company)
     })
   }
+
+  useEffect(() => {
+    if (param.id) {
+      fetchPrduct(param.id)
+      setAction('EDIT')
+    }
+  }, [])
+
+  const path = window.location.hash
+  //Check Redirection from Edit to Add
+
+  useEffect(() => {
+    if (param.id) {
+      fetchPrduct(param.id)
+      setAction('EDIT')
+    } else {
+      setAction('ADD')
+    }
+  }, [path])
+
+  const selectUrl = {
+    ADD: '/product/add',
+    EDIT: `/product/${param.id}/update`,
+  }
+
+  const selectCallAction = {
+    ADD: Helpers.axiosPostCall,
+    EDIT: Helpers.axiosPutCall,
+  }
+
+  const handleSubmit = () => {
+    selectCallAction[action](selectUrl[action], { name, category, price, company }).then(
+      (response) => {
+        if (response) navigate('/products')
+      },
+    )
+  }
   return (
-    // <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
     <CContainer>
-      CreateProduct
-      {/* <CRow className="justify-content-center">
-          <CCol md={8}>
-            <CCardGroup>
-              <CCard className="p-4">
-                <CCardBody>
-                  <CForm>
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>
-                        <CIcon icon={cilUser} />
-                      </CInputGroupText>
-                      <CFormInput
-                        placeholder="Email"
-                        // autoComplete="Email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value)
-                        }}
-                      />
-                    </CInputGroup>
-                    <CInputGroup className="mb-4">
-                      <CInputGroupText>
-                        <CIcon icon={cilLockLocked} />
-                      </CInputGroupText>
-                      <CFormInput
-                        // autoComplete="current-password"
-                        type="password"
-                        placeholder="Enter Password"
-                        value={password}
-                        onChange={(e) => {
-                          setPassword(e.target.value)
-                        }}
-                      />
-                    </CInputGroup>
-                    <CRow>
-                      <CCol xs={6}>
-                        <CButton
-                          onClick={() => {
-                            handleSubmit()
-                          }}
-                          color="primary"
-                          className="px-4"
-                        >
-                          Login
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
-                        </CButton>
-                      </CCol>
-                    </CRow>
-                  </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
-                  </div>
-                </CCardBody>
-              </CCard>
-            </CCardGroup>
+      <CForm>
+        <p className="text-medium-emphasis">
+          {param.id ? 'Edit Your Product' : 'Create a new Product'}
+        </p>
+        <CRow>
+          <CCol lg={5} md={5} sm={12}>
+            <CInputGroup className="mb-3">
+              <CFormInput
+                placeholder="Enter Name"
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                }}
+              />
+            </CInputGroup>
           </CCol>
-        </CRow> */}
+        </CRow>
+        <CRow>
+          <CCol lg={5} md={5} sm={12}>
+            <CInputGroup className="mb-4">
+              <CFormInput
+                type="text"
+                placeholder="Enter Category"
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value)
+                }}
+              />
+            </CInputGroup>
+          </CCol>
+        </CRow>
+
+        <CRow>
+          <CCol lg={5} md={5} sm={12}>
+            <CInputGroup className="mb-4">
+              <CFormInput
+                type="text"
+                placeholder="Enter price"
+                value={price}
+                onChange={(e) => {
+                  setPrice(e.target.value)
+                }}
+              />
+            </CInputGroup>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol lg={5} md={5} sm={12}>
+            <CInputGroup className="mb-4">
+              <CFormInput
+                type="text"
+                placeholder="Enter Company"
+                value={company}
+                onChange={(e) => {
+                  setCompany(e.target.value)
+                }}
+              />
+            </CInputGroup>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol xs={6}>
+            <CButton
+              onClick={() => {
+                handleSubmit()
+              }}
+              color="primary"
+              className="px-4"
+            >
+              {action == 'ADD' ? 'Add' : 'Edit'} Product
+            </CButton>
+          </CCol>
+        </CRow>
+      </CForm>
     </CContainer>
     // </div>
   )

@@ -1,27 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardGroup,
-  CCol,
-  CContainer,
-  CForm,
-  CFormInput,
-  CInputGroup,
-  CInputGroupText,
-  CRow,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import DataTable from 'react-data-table-component'
+import { useNavigate } from 'react-router-dom'
 import { cilDelete, cilBrush } from '@coreui/icons'
 import { confirmAlert } from 'react-confirm-alert'
+import { CContainer } from '@coreui/react'
+import CIcon from '@coreui/icons-react'
+import DataTable from 'react-data-table-component'
 
 import Helpers from '../../utils/Helpers'
+import './react-confirm-alert.css'
 
 const Products = () => {
   const [products, setProducts] = useState([])
+  const navigate = useNavigate()
 
   const fetchPrducts = () => {
     Helpers.axiosGetCall(`/product`).then((response) => {
@@ -41,13 +31,13 @@ const Products = () => {
     })
   }
 
-  checkConfirm = (id) => {
+  const checkConfirm = (id) => {
     confirmAlert({
-      message: 'Are you sure you want to delete this item ?',
+      message: 'Are you sure to delete this Product?',
       buttons: [
         {
           label: 'Yes',
-          onClick: () => this.handleDelete(id),
+          onClick: () => deleteProduct(id),
         },
         {
           label: 'No',
@@ -83,8 +73,8 @@ const Products = () => {
       button: true,
       cell: (row) => (
         <div className="d-flex gap-2">
-          <CIcon icon={cilBrush} onClick={() => this.checkConfirm(row._id)} />
-          <CIcon icon={cilDelete} onClick={() => deleteProduct(row._id)} />
+          <CIcon icon={cilBrush} onClick={() => navigate(`/products/action/${row._id}`)} />
+          <CIcon icon={cilDelete} onClick={() => checkConfirm(row._id)} />
         </div>
       ),
     },
