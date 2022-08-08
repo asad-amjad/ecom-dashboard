@@ -16,6 +16,19 @@ const helpers = {
     let res = await axios.get(process.env.REACT_APP_API_URL + url, {
       headers: {
         'Content-Type': 'application/json',
+        authorization: `bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+      },
+    })
+
+    let response = await res.data
+    return response
+  },
+
+  axiosDeleteCall: async (url) => {
+    let res = await axios.delete(process.env.REACT_APP_API_URL + url, {
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
       },
     })
 
