@@ -31,7 +31,10 @@ const helpers = {
 
   axiosGetCall: async (url, data) => {
     let res = await axios.get(process.env.REACT_APP_API_URL + url, {
-      headers: { ...withToken },
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+      },
     })
 
     let response = await res.data

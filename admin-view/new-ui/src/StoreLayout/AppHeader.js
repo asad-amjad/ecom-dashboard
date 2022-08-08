@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CContainer,
@@ -12,7 +12,7 @@ import {
   CNavItem,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from '@coreui/icons'
+import { cilBell, cilEnvelopeOpen, cilList, cilMenu, cilExitToApp } from '@coreui/icons'
 
 // import { AppBreadcrumb } from './index'
 // import { AppHeaderDropdown } from './header/index'
@@ -20,8 +20,13 @@ import { logo } from 'src/assets/brand/logo'
 
 const AppHeader = () => {
   const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const navigate = useNavigate()
 
+  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const logout = () => {
+    localStorage.clear()
+    navigate('/login')
+  }
   return (
     <CHeader position="sticky" className="mb-4">
       <CContainer fluid>
@@ -64,9 +69,11 @@ const AppHeader = () => {
             </CNavLink>
           </CNavItem> */}
         </CHeaderNav>
-        {/* <CHeaderNav className="ms-3">
-          <AppHeaderDropdown />
-        </CHeaderNav> */}
+        <CHeaderNav className="d-flex align-items-center gap-1" role="button" onClick={logout}>
+          {/* <AppHeaderDropdown /> */}
+          Log out {`(${JSON.parse(localStorage.getItem('userDetails')).name})`}
+          <CIcon icon={cilExitToApp} size="sm" />
+        </CHeaderNav>
       </CContainer>
       <CHeaderDivider />
       {/* <CContainer fluid>

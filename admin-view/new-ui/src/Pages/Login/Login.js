@@ -26,7 +26,8 @@ const Login = () => {
   const handleSubmit = () => {
     Helpers.axiosPostCall(`/user/login`, { email, password }).then((response) => {
       if (response.accessToken) {
-        localStorage.setItem('accessToken', JSON.stringify(response.accessToken)), navigate('/')
+        localStorage.setItem('accessToken', JSON.stringify(response.accessToken))
+        localStorage.setItem('userDetails', JSON.stringify(response.userDetails)), navigate('/')
       }
     })
   }
