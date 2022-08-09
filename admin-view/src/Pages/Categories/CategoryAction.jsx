@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -19,20 +19,91 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import Helpers from '../../utils/Helpers'
 
 const CategoryAction = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+
+  const [action, setAction] = useState('ADD')
+  const [error, setError] = useState(false)
+
   const navigate = useNavigate()
+  const param = useParams()
+
+  const fetchPrduct = (id) => {
+    Helpers.axiosGetCall(`/category/${id}`).then((response) => {
+      const { name } = response
+      setName(name)
+    })
+  }
+
+  useEffect(() => {
+    if (param.id) {
+      fetchPrduct(param.id)
+      setAction('EDIT')
+    }
+  }, [])
+
+  const path = window.location.hash
+  //Check Redirection from Edit to Add
+
+  useEffect(() => {
+    if (param.id) {
+      fetchPrduct(param.id)
+      setAction('EDIT')
+    } else {
+      setAction('ADD')
+    }
+  }, [path])
+
+  const selectUrl = {
+    ADD: '/category/add',
+    EDIT: `/category/${param.id}/update`,
+  }
+
+  const selectCallAction = {
+    ADD: Helpers.axiosPostCall,
+    EDIT: Helpers.axiosPutCall,
+  }
 
   const handleSubmit = () => {
-    Helpers.axiosPostCall(`/user/login`, { email, password }).then((response) => {
-      if (response.accessToken) {
-        localStorage.setItem('accessToken', JSON.stringify(response.accessToken)), navigate('/')
-      }
+    selectCallAction[action](selectUrl[action], { name }).then((response) => {
+      if (response) navigate('/categories')
     })
   }
   return (
-    // <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
-    <CContainer>Cat Action</CContainer>
+    <CContainer>
+      <CForm>
+        <p className="text-medium-emphasis">
+          {param.id ? 'Edit Your Category' : 'Create a new Category'}
+        </p>
+        <CRow>
+          <CCol lg={5} md={5} sm={12}>
+            <CInputGroup className="mb-3">
+              <CFormInput
+                placeholder="Enter Name"
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value)
+                }}
+              />
+            </CInputGroup>
+          </CCol>
+        </CRow>
+
+        <CRow>
+          <CCol xs={6}>
+            <CButton
+              onClick={() => {
+                handleSubmit()
+              }}
+              color="primary"
+              className="px-4"
+            >
+              {action == 'ADD' ? 'Add' : 'Edit'} Category
+            </CButton>
+          </CCol>
+        </CRow>
+      </CForm>
+    </CContainer>
     // </div>
   )
 }

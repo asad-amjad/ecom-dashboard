@@ -1,39 +1,88 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardGroup,
-  CCol,
-  CContainer,
-  CForm,
-  CFormInput,
-  CInputGroup,
-  CInputGroupText,
-  CRow,
-} from '@coreui/react'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { cilDelete, cilBrush } from '@coreui/icons'
+import { confirmAlert } from 'react-confirm-alert'
+import { CContainer } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+import DataTable from 'react-data-table-component'
 
 import Helpers from '../../utils/Helpers'
+import '../Products/react-confirm-alert.css'
 
 const Category = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [products, setProducts] = useState([])
   const navigate = useNavigate()
+  const fetchPrducts = () => {
+    Helpers.axiosGetCall(`/category`).then((response) => {
+      setProducts(response)
+    })
+  }
 
-  const handleSubmit = () => {
-    Helpers.axiosPostCall(`/user/login`, { email, password }).then((response) => {
-      if (response.accessToken) {
-        localStorage.setItem('accessToken', JSON.stringify(response.accessToken)), navigate('/')
+  useEffect(() => {
+    fetchPrducts()
+  }, [])
+
+  const deleteProduct = async (id) => {
+    Helpers.axiosDeleteCall(`/category/${id}/delete`).then((response) => {
+      if (response.message == 'Success') {
+        fetchPrducts()
       }
     })
   }
+
+  const checkConfirm = (id) => {
+    confirmAlert({
+      message: 'Are you sure to delete this Product?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => deleteProduct(id),
+        },
+        {
+          label: 'No',
+          onClick: () => null,
+        },
+      ],
+    })
+  }
+
+  const columns = [
+    {
+      name: 'Name',
+      selector: (row) => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Created At',
+      selector: (row) => row.createdAt,
+      sortable: true,
+    },
+
+    {
+      name: 'Action',
+      button: true,
+      cell: (row) => (
+        <div className="d-flex gap-2">
+          <CIcon icon={cilBrush} onClick={() => navigate(`/categories/action/${row._id}`)} />
+          <CIcon icon={cilDelete} onClick={() => checkConfirm(row._id)} />
+        </div>
+      ),
+    },
+  ]
+
   return (
-    // <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
-    <CContainer>List</CContainer>
-    // </div>
+    <CContainer>
+      <DataTable
+        title="Categoires"
+        columns={columns}
+        data={products}
+        // defaultSortFieldID={1}
+        // pagination
+        // paginationComponent={BootyPagination}
+        // selectableRows
+        // selectableRowsComponent={BootyCheckbox}
+      />
+    </CContainer>
   )
 }
 

@@ -4,6 +4,8 @@ const cors = require("cors");
 // const User = require("./db/User");
 const product = require("./routes/product.route"); // Imports routes for the products
 const user = require("./routes/user.route"); // Imports routes for the products
+const category = require("./routes/category.route"); // Imports routes for the products
+const subCategory = require("./routes/subCategory"); // Imports routes for the products
 
 const app = express();
 const Jwt = require("jsonwebtoken");
@@ -14,6 +16,8 @@ app.use(cors());
 
 app.use("/user", user);
 app.use("/product", product);
+app.use("/category", category);
+app.use("/sub-category", subCategory);
 
 // app.post("/register", async (req, res) => {
 //   const user = new User(req.body);
