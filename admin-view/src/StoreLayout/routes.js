@@ -4,7 +4,7 @@ const Dashboard = React.lazy(() => import('../views/dashboard/Dashboard'))
 const Products = React.lazy(() => import('../Pages/Products/Products'))
 const ProductAction = React.lazy(() => import('../Pages/Products/Actions'))
 const Categories = React.lazy(() => import('../Pages/Categories/Categories'))
-const CategoryAction = React.lazy(() => import('../Pages/Categories/CategoryAction'))
+const CategoryAction = React.lazy(() => import('../Pages/Categories/categoryAction'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },

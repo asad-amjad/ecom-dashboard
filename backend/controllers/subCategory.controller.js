@@ -1,4 +1,6 @@
 const Model = require("../models/subCategory");
+const Category = require("../models/category");
+// const subCategory = require("../models/subCategory");
 
 //@TODO validations + response status
 exports.all = async function (req, res) {
@@ -10,13 +12,38 @@ exports.all = async function (req, res) {
 
 exports.add = function (req, res) {
   let body = { ...req.body };
-  let item = new Model(body);
-  item.save(function (err) {
-    if (err) {
-      return next(err);
-    }
-    res.send(200);
+  let new_sub_category = new Model(body);
+
+  //Push data in parent Categoy
+  Category.findById(body.category_id, function (err, item) {
+    let data = { _id: new_sub_category._id, name: body.name };
+    Category.findOneAndUpdate(
+      { _id: body.category_id },
+      {
+        $set: {
+          sub_categories:
+            item.sub_categories.length > 0
+              ? [...item.sub_categories, data]
+              : [data],
+        },
+      }
+    )
+      .then((result) => {
+        new_sub_category.save(function (err, new_sub_category) {
+          console.log(err, new_sub_category);
+          if (err) {
+            return next(err);
+          }
+          // res.send(200);
+          res.status(200).json({ message: "Success", result });
+        });
+      })
+      .catch((error) => {
+        res.status(500).json({ message: "Parent id not found" });
+      });
   });
+
+  // Creating new category
 };
 
 exports.details = function (req, res) {
@@ -56,14 +83,3 @@ exports.delete = (req, res) => {
       });
   });
 };
-
-// exports.search = async function (req, res) {
-//   let result = await Model.find({
-//     $or: [
-//       { name: { $regex: req.params.key } },
-//       { company: { $regex: req.params.key } },
-//       { category: { $regex: req.params.key } },
-//     ],
-//   });
-//   res.status(200).send(result);
-// };

@@ -4,18 +4,19 @@ const Schema = mongoose.Schema;
 let Model = new Schema(
   {
     category_id: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "category",
+      // required: true,
     },
     sub_category: {
       type: String,
-      required: true,
+      // required: true,
     },
   },
   {
     strict: false,
     versionKey: false,
-    timestamps: true,
+    // timestamps: true,
     collection: "sub-categories",
   }
 );
