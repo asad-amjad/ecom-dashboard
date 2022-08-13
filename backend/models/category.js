@@ -4,12 +4,7 @@ const Schema = mongoose.Schema;
 let Model = new Schema(
   {
     name: String,
-    // sub_categories: [
-    //   {
-    //     _id: String,
-    //     name: String,
-    //   },
-    // ],
+    sub_categories: [{ type: Schema.Types.ObjectId, ref: "SubCategory" }],
   },
   {
     strict: false,

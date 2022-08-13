@@ -1,12 +1,15 @@
 const Model = require("../models/category");
 
-//@TODO validations + response status
-exports.all = async function (req, res) {
-  console.log("call");
-  Model.find(req.query, function (err, item) {
-    if (err) return next(err);
-    res.send(item);
-  });
+exports.all = (req, res) => {
+  Model.find({})
+    .populate("sub_categories") //Get by [ids]
+    .exec((err, doc) => {
+      if (err) {
+        return next(err);
+      } else {
+        res.send(doc);
+      }
+    });
 };
 
 exports.add = function (req, res) {
