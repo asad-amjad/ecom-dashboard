@@ -1,0 +1,43 @@
+.Category {
+  .SubCategoryChip {
+    &-ChipCard {
+      //   display: flex;
+      //   //   justify-items: center;
+      //   gap: 1rem;
+      display: inline-flex;
+      /* display: flex; */
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding: 5px;
+      //   justify-content: center;
+      //   align-items: center;
+      flex-direction: row;
+    }
+
+    &-Chip {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-radius: 5px;
+      padding: 4px;
+      border: 1px solid #3c4b64;
+    }
+
+    &-Label {
+      font-size: 10px;
+      min-width: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: rgb(128, 128, 128);
+    }
+
+    &-EditButton {
+      width: 15px !important;
+      color: cadetblue;
+    }
+    &-DeleteButton {
+      color: red;
+      width: 15px !important;
+    }
+  }
+}

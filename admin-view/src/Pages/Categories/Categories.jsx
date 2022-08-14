@@ -6,11 +6,18 @@ import { CContainer } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import DataTable from 'react-data-table-component'
 
+import { Button } from 'reactstrap'
+
 import Helpers from '../../utils/Helpers'
 import '../Products/react-confirm-alert.css'
+import './Category.scss'
+import CategoryModal from './CategoryModal'
 
 const Category = () => {
   const [products, setProducts] = useState([])
+  const [modalState, setModalState] = useState(false)
+  const [modalType, setModalType] = useState({ type: '', id: '' })
+
   const navigate = useNavigate()
   const fetchPrducts = () => {
     Helpers.axiosGetCall(`/category`).then((response) => {
@@ -46,24 +53,44 @@ const Category = () => {
     })
   }
 
+  const toggle = ({ type, id }) => {
+    setModalType({ type: type, id: id })
+    setModalState(!modalState)
+  }
+
   const columns = [
     {
       name: 'Name',
       selector: (row) => row.name,
       sortable: true,
     },
-    {
-      name: 'Created At',
-      selector: (row) => row.createdAt,
-      sortable: true,
-    },
 
+    {
+      name: 'Sub categories',
+      cell: (row) => (
+        <div className="SubCategoryChip-ChipCard">
+          {row.sub_categories.map(({ _id, name }) => {
+            return (
+              <div key={_id} className="SubCategoryChip-Chip">
+                <CIcon
+                  className="SubCategoryChip-EditButton"
+                  icon={cilBrush}
+                  onClick={() => toggle({ type: 'SUB_CATEGORY_EDIT', id: _id })}
+                />
+                <span className="SubCategoryChip-Label">{name}</span>
+                <CIcon icon={cilDelete} className="SubCategoryChip-DeleteButton" />
+              </div>
+            )
+          })}
+        </div>
+      ),
+    },
     {
       name: 'Action',
       button: true,
       cell: (row) => (
         <div className="d-flex gap-2">
-          <CIcon icon={cilBrush} onClick={() => navigate(`/categories/action/${row._id}`)} />
+          <CIcon icon={cilBrush} onClick={() => toggle({ type: 'CATEGORY_EDIT', id: row._id })} />
           <CIcon icon={cilDelete} onClick={() => checkConfirm(row._id)} />
         </div>
       ),
@@ -71,7 +98,15 @@ const Category = () => {
   ]
 
   return (
-    <CContainer>
+    <div className="Category">
+      <Button
+        color="info"
+        onClick={() => toggle({ type: 'ADD_NEW_CATEGORY', id: null })}
+        className="mb-2"
+      >
+        Add New Category
+      </Button>
+
       <DataTable
         title="Categoires"
         columns={columns}
@@ -82,7 +117,9 @@ const Category = () => {
         // selectableRows
         // selectableRowsComponent={BootyCheckbox}
       />
-    </CContainer>
+
+      <CategoryModal isOpen={modalState} toggle={toggle} modalType={modalType} />
+    </div>
   )
 }
 
