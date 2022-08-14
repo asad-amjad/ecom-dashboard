@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { cilDelete, cilBrush } from '@coreui/icons'
+import { cilDelete, cilBrush, cilNoteAdd, cilPlus } from '@coreui/icons'
 import { confirmAlert } from 'react-confirm-alert'
 import { CContainer } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
@@ -14,25 +14,26 @@ import './Category.scss'
 import CategoryModal from './CategoryModal'
 
 const Category = () => {
-  const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
   const [modalState, setModalState] = useState(false)
-  const [modalType, setModalType] = useState({ type: '', id: '' })
-
+  const [modalType, setModalType] = useState({ type: 'CLICK', id: '' })
+  const [details, setDetails] = useState({})
   const navigate = useNavigate()
-  const fetchPrducts = () => {
+
+  const fetchCategories = () => {
     Helpers.axiosGetCall(`/category`).then((response) => {
-      setProducts(response)
+      setCategories(response)
     })
   }
 
   useEffect(() => {
-    fetchPrducts()
+    fetchCategories()
   }, [])
 
   const deleteProduct = async (id) => {
     Helpers.axiosDeleteCall(`/category/${id}/delete`).then((response) => {
       if (response.message == 'Success') {
-        fetchPrducts()
+        fetchCategories()
       }
     })
   }
@@ -52,10 +53,33 @@ const Category = () => {
       ],
     })
   }
-
+  const getCategoryDetails = (categories, id) => categories.find((k) => k._id === id)
+  const getsubCategoryDetails = (categories, id) => categories.find((k) => k._id === id)
+  const callBack = () => {
+    fetchCategories()
+  }
   const toggle = ({ type, id }) => {
     setModalType({ type: type, id: id })
     setModalState(!modalState)
+
+    if (type === 'EDIT_CATEGORY') {
+      setDetails(getCategoryDetails(categories, id))
+    }
+
+    if (type === 'EDIT_SUB_CATEGORY') {
+      Helpers.axiosGetCall(`/sub-category/${id}`).then((response) => {
+        setDetails(response)
+      })
+    }
+    if (type === 'ADD_SUB_CATEGORY') {
+      // Helpers.axiosGetCall(`/category`).then((response) => {
+      //   setDetails(response)
+      // })
+    }
+
+    if (type === 'CLICK') {
+      setDetails({})
+    }
   }
 
   const columns = [
@@ -69,19 +93,29 @@ const Category = () => {
       name: 'Sub categories',
       cell: (row) => (
         <div className="SubCategoryChip-ChipCard">
-          {row.sub_categories.map(({ _id, name }) => {
-            return (
-              <div key={_id} className="SubCategoryChip-Chip">
-                <CIcon
-                  className="SubCategoryChip-EditButton"
-                  icon={cilBrush}
-                  onClick={() => toggle({ type: 'SUB_CATEGORY_EDIT', id: _id })}
-                />
-                <span className="SubCategoryChip-Label">{name}</span>
-                <CIcon icon={cilDelete} className="SubCategoryChip-DeleteButton" />
-              </div>
-            )
-          })}
+          {row.sub_categories.length !== 0 ? (
+            row.sub_categories.map(({ _id, name }) => {
+              return (
+                <div key={_id} className="SubCategoryChip-Chip">
+                  <CIcon
+                    className="SubCategoryChip-EditButton"
+                    icon={cilBrush}
+                    size="sm"
+                    onClick={() => toggle({ type: 'EDIT_SUB_CATEGORY', id: _id })}
+                  />
+                  <span className="SubCategoryChip-Label">{name}</span>
+                  <CIcon icon={cilDelete} size="sm" className="SubCategoryChip-DeleteButton" />
+                </div>
+              )
+            })
+          ) : (
+            <CIcon
+              icon={cilPlus}
+              onClick={() => toggle({ type: 'ADD_SUB_CATEGORY', id: row._id })}
+              size="sm"
+              title={`Add new sub cateogry for '${row.name}'`}
+            />
+          )}
         </div>
       ),
     },
@@ -90,7 +124,7 @@ const Category = () => {
       button: true,
       cell: (row) => (
         <div className="d-flex gap-2">
-          <CIcon icon={cilBrush} onClick={() => toggle({ type: 'CATEGORY_EDIT', id: row._id })} />
+          <CIcon icon={cilBrush} onClick={() => toggle({ type: 'EDIT_CATEGORY', id: row._id })} />
           <CIcon icon={cilDelete} onClick={() => checkConfirm(row._id)} />
         </div>
       ),
@@ -101,24 +135,30 @@ const Category = () => {
     <div className="Category">
       <Button
         color="info"
-        onClick={() => toggle({ type: 'ADD_NEW_CATEGORY', id: null })}
-        className="mb-2"
+        onClick={() => toggle({ type: 'ADD_CATEGORY', id: null })}
+        className="mb-2 float-end text-light"
       >
         Add New Category
       </Button>
 
       <DataTable
-        title="Categoires"
+        title="Categoires and Sub Categories"
         columns={columns}
-        data={products}
+        data={categories}
         // defaultSortFieldID={1}
-        // pagination
+        pagination
         // paginationComponent={BootyPagination}
         // selectableRows
         // selectableRowsComponent={BootyCheckbox}
       />
 
-      <CategoryModal isOpen={modalState} toggle={toggle} modalType={modalType} />
+      <CategoryModal
+        isOpen={modalState}
+        toggle={toggle}
+        modalType={modalType}
+        details={details}
+        callBack={callBack}
+      />
     </div>
   )
 }

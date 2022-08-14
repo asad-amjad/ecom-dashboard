@@ -1,4 +1,6 @@
 .Category {
+
+
   .SubCategoryChip {
     &-ChipCard {
       //   display: flex;
@@ -32,12 +34,12 @@
     }
 
     &-EditButton {
-      width: 15px !important;
+      // width: 15px !important;
       color: cadetblue;
     }
     &-DeleteButton {
       color: red;
-      width: 15px !important;
+      // width: 15px !important;
     }
   }
 }

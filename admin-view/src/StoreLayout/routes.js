@@ -4,7 +4,6 @@ const Dashboard = React.lazy(() => import('../views/dashboard/Dashboard'))
 const Products = React.lazy(() => import('../Pages/Products/Products'))
 const ProductAction = React.lazy(() => import('../Pages/Products/Actions'))
 const Categories = React.lazy(() => import('../Pages/Categories/Categories'))
-const CategoryAction = React.lazy(() => import('../Pages/Categories/categoryAction'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -12,10 +11,7 @@ const routes = [
   { path: '/products', element: Products, exact: true },
   { path: '/products/action', element: ProductAction },
   { path: '/products/action/:id', element: ProductAction }, //@TODO
-
   { path: '/categories', element: Categories, exact: true },
-  { path: '/categories/action', element: CategoryAction },
-  { path: '/categories/action/:id', element: CategoryAction },
 ]
 
 export default routes

@@ -1,119 +1,73 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardGroup,
-  CCol,
-  CContainer,
-  CForm,
-  CFormInput,
-  CInputGroup,
-  CInputGroupText,
-  CRow,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
-import Select from 'react-select'
-
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Badge } from 'reactstrap'
+import { CContainer, CFormInput, CInputGroup } from '@coreui/react'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { any } from 'prop-types'
 
 import Helpers from '../../utils/Helpers'
-import { any, func } from 'prop-types'
 
-const CategoryModal = ({ isOpen, toggle, modalType }) => {
+const CategoryModal = ({ isOpen, toggle, modalType, details, callBack }) => {
   const [name, setName] = useState('')
-  const [subCategory, setSubCategory] = useState('')
-  const [categories, setCategories] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState('')
 
-  const [action, setAction] = useState('ADD')
-  const [error, setError] = useState(false)
-  // console.log(selectedCategory)
-  const navigate = useNavigate()
-  const param = useParams()
-
-  // const fetchPrduct = (id) => {
-  //   Helpers.axiosGetCall(`/category/${id}`).then((response) => {
-  //     const { name } = response
-  //     setName(name)
-  //   })
-  // }
-
-  // useEffect(() => {
-  //   if (param.id) {
-  //     fetchPrduct(param.id)
-  //     setAction('EDIT')
-  //   }
-  //   fetchCategories()
-  // }, [])
-
-  const fetchCategories = () => {
-    Helpers.axiosGetCall(`/category`).then((response) => {
-      setCategories(response)
-    })
-  }
-
-  // const path = window.location.hash
-  // //Check Redirection from Edit to Add
-
-  // useEffect(() => {
-  //   if (param.id) {
-  //     fetchPrduct(param.id)
-  //     setAction('EDIT')
-  //   } else {
-  //     setAction('ADD')
-  //   }
-  // }, [path])
+  useEffect(() => {
+    setName(details.name)
+  }, [details])
 
   const selectUrl = {
-    ADD: '/category/add',
-    EDIT: `/category/${param.id}/update`,
+    ADD_CATEGORY: '/category/add',
+    EDIT_CATEGORY: `/category/${details._id}/update`,
+
+    ADD_SUB_CATEGORY: '/sub-category/add',
+    EDIT_SUB_CATEGORY: `/sub-category/${details._id}/update`,
   }
 
   const selectCallAction = {
-    ADD: Helpers.axiosPostCall,
-    EDIT: Helpers.axiosPutCall,
+    ADD_CATEGORY: Helpers.axiosPostCall,
+    ADD_SUB_CATEGORY: Helpers.axiosPostCall,
+
+    EDIT_CATEGORY: Helpers.axiosPutCall,
+    EDIT_SUB_CATEGORY: Helpers.axiosPutCall,
   }
 
-  const handleSubmit = () => {
-    selectCallAction[action](selectUrl[action], { name, sub_categories: [] }).then((response) => {
-      if (response) navigate('/categories')
+  const selectDataToSave = {
+    ADD_CATEGORY: { name, sub_categories: [] },
+    EDIT_CATEGORY: { name },
+
+    ADD_SUB_CATEGORY: { name, category_id: modalType.id },
+    EDIT_SUB_CATEGORY: { name },
+  }
+
+  const handleSubmit = (type) => {
+    selectCallAction[type](selectUrl[type], selectDataToSave[type]).then((response) => {
+      if (response) callBack()
     })
   }
-
-  const handleSubmitSubCategory = () => {
-    Helpers.axiosPostCall('/sub-category/add', {
-      name: subCategory,
-      category_id: selectedCategory,
-    }).then((response) => {
-      if (response) navigate('/categories')
-    })
-  }
-
-  const options = categories.map((k) => {
-    return { value: k._id, label: k.name }
-  })
 
   return (
-    <Modal isOpen={isOpen}toggle={toggle({ type: 'CLOSE', id: null })} className="">
-      <ModalHeader toggle={toggle({ type: 'CLOSE', id: null })}>Modal title</ModalHeader>
+    <Modal isOpen={isOpen} toggle={() => toggle({ type: 'CLICK', id: '' })} className="">
+      <ModalHeader toggle={() => toggle({ type: 'CLICK', id: '' })}>{modalType.type}</ModalHeader>
       <ModalBody>
-        {modalType.type}
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt
-        ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-        cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        <CContainer>
+          <CInputGroup className="mb-3">
+            <CFormInput
+              placeholder="Enter Name"
+              type="text"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value)
+              }}
+            />
+          </CInputGroup>
+        </CContainer>
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={toggle}>
-          Do Something
+        <Button
+          color="primary"
+          onClick={() => {
+            handleSubmit(modalType.type)
+          }}
+        >
+          {modalType.type}
         </Button>{' '}
-        <Button color="secondary" onClick={toggle}>
-          Cancel
-        </Button>
       </ModalFooter>
     </Modal>
   )
@@ -128,6 +82,8 @@ CategoryModal.propTypes = {
   toggle: any,
   isOpen: any,
   modalType: any,
+  details: any,
+  callBack: any,
 }
 
 export default CategoryModal
