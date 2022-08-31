@@ -70,8 +70,10 @@ const AppHeader = () => {
           </CNavItem> */}
         </CHeaderNav>
         <CHeaderNav className="d-flex align-items-center gap-1" role="button" onClick={logout}>
+          Logout
           {/* <AppHeaderDropdown /> */}
-          Log out {`(${JSON.parse(localStorage.getItem('userDetails')).name})`}
+          {/* {console.log(JSON.parse(localStorage.getItem('user')))}
+          Log out {`(${JSON.parse(localStorage.getItem('user')).name})`} */}
           <CIcon icon={cilExitToApp} size="sm" />
         </CHeaderNav>
       </CContainer>

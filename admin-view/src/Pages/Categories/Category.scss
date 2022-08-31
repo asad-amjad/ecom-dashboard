@@ -1,18 +1,10 @@
 .Category {
-
-
   .SubCategoryChip {
     &-ChipCard {
-      //   display: flex;
-      //   //   justify-items: center;
-      //   gap: 1rem;
       display: inline-flex;
-      /* display: flex; */
       gap: 1rem;
       flex-wrap: wrap;
       padding: 5px;
-      //   justify-content: center;
-      //   align-items: center;
       flex-direction: row;
     }
 
@@ -33,13 +25,26 @@
       color: rgb(128, 128, 128);
     }
 
-    &-EditButton {
-      // width: 15px !important;
-      color: cadetblue;
+    &-AddNew {
+      display: flex;
+      border-radius: 5px;
+      padding: 4px;
+      border: 1px solid rgb(23, 151, 230);
+      cursor: pointer;
     }
-    &-DeleteButton {
-      color: red;
-      // width: 15px !important;
+
+    &-AddButton {
+      color: rgb(23, 151, 230);
     }
+  }
+
+  .EditButton {
+    cursor: pointer;
+    color: cadetblue;
+  }
+
+  .DeleteButton {
+    cursor: pointer;
+    color: red;
   }
 }
