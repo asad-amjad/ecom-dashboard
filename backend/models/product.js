@@ -5,9 +5,14 @@ let Model = new Schema(
   {
     name: String,
     price: String,
-    category: String,
     userId: String,
     company: String,
+
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubCategory",
+      // required: true,
+    },
   },
   { strict: false, versionKey: false, timestamps: true, collection: "products" }
 );

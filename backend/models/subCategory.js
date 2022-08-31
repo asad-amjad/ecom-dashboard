@@ -3,13 +3,14 @@ const Schema = mongoose.Schema;
 
 let Model = new Schema(
   {
-    category_id: {
+    parent_category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "category",
       // required: true,
     },
     sub_category: {
       type: String,
+      ref: "categories",
       // required: true,
     },
   },

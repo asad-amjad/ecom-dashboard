@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { userLogin } from 'src/Redux/Actions'
 import { Link, useNavigate } from 'react-router-dom'
+import { cilLockLocked, cilUser } from '@coreui/icons'
 import {
   CButton,
   CCard,
@@ -14,23 +17,23 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
-
-import Helpers from '../../utils/Helpers'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const callBack = (data) => {
+    if (data) {
+      navigate('/')
+    }
+  }
 
   const handleSubmit = () => {
-    Helpers.axiosPostCall(`/user/login`, { email, password }).then((response) => {
-      if (response.accessToken) {
-        localStorage.setItem('accessToken', JSON.stringify(response.accessToken))
-        localStorage.setItem('userDetails', JSON.stringify(response.userDetails)), navigate('/')
-      }
-    })
+    dispatch(userLogin({ email, password }, callBack))
   }
+  // const loginReducer = useSelector(state => state.loginReducer);
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>

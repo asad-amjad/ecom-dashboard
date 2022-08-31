@@ -1,11 +1,25 @@
 const Model = require("../models/product");
 
 //@TODO validations + response status
-exports.all = async function (req, res) {
-  Model.find(req.query, function (err, item) {
-    if (err) return next(err);
-    res.send(item);
-  });
+// exports.all = async function (req, res) {
+//   Model.find(req.query, function (err, item) {
+//     if (err) return next(err);
+//     res.send(item);
+//   });
+// };
+
+
+exports.all = (req, res) => {
+  console.log(process.env)
+  Model.find({})
+    .populate("category") //Get by [ids]
+    .exec((err, doc) => {
+      if (err) {
+        return next(err);
+      } else {
+        res.send(doc);
+      }
+    });
 };
 
 exports.add = function (req, res) {

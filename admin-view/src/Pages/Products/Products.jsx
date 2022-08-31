@@ -8,25 +8,24 @@ import DataTable from 'react-data-table-component'
 
 import Helpers from '../../utils/Helpers'
 import './react-confirm-alert.css'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchProducts } from 'src/Redux/Actions'
 
 const Products = () => {
-  const [products, setProducts] = useState([])
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-  const fetchPrducts = () => {
-    Helpers.axiosGetCall(`/product`).then((response) => {
-      setProducts(response)
-    })
-  }
+  const productsReducer = useSelector((state) => state.productsReducer)
+  const { products } = productsReducer || []
 
   useEffect(() => {
-    fetchPrducts()
+    dispatch(fetchProducts())
   }, [])
 
   const deleteProduct = async (id) => {
     Helpers.axiosDeleteCall(`/product/${id}/delete`).then((response) => {
       if (response.message == 'Success') {
-        fetchPrducts()
+        dispatch(fetchProducts())
       }
     })
   }
@@ -60,7 +59,7 @@ const Products = () => {
     },
     {
       name: 'Category',
-      selector: (row) => row.category,
+      selector: (row) => row.category.name,
       sortable: true,
     },
     {
@@ -82,16 +81,7 @@ const Products = () => {
 
   return (
     <CContainer>
-      <DataTable
-        title="Products"
-        columns={columns}
-        data={products}
-        // defaultSortFieldID={1}
-        // pagination
-        // paginationComponent={BootyPagination}
-        // selectableRows
-        // selectableRowsComponent={BootyCheckbox}
-      />
+      <DataTable title="Products" columns={columns} data={products} />
     </CContainer>
   )
 }

@@ -3,12 +3,24 @@ const Category = require("../models/category");
 const mongoose = require("mongoose");
 
 //@TODO validations + response status
-exports.all = async function (req, res) {
-  Model.find(req.query, function (err, item) {
-    console.log(item);
-    if (err) return next(err);
-    res.send(item);
-  });
+// exports.all = async function (req, res) {
+//   Model.find(req.query, function (err, item) {
+//     console.log(item);
+//     if (err) return next(err);
+//     res.send(item);
+//   });
+// };
+
+exports.all = (req, res) => {
+  Model.find({})
+    .populate("parent_category") //Get by [ids]
+    .exec((err, doc) => {
+      if (err) {
+        return next(err);
+      } else {
+        res.send(doc);
+      }
+    });
 };
 
 exports.add = function (req, res) {
@@ -16,7 +28,7 @@ exports.add = function (req, res) {
   let new_sub_category = new Model(body);
 
   Category.findOneAndUpdate(
-    { _id: body.category_id },
+    { _id: body.parent_category },
     {
       $push: {
         sub_categories: mongoose.Types.ObjectId(new_sub_category._id),
