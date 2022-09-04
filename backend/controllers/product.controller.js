@@ -1,16 +1,38 @@
 const Model = require("../models/product");
+const multer = require("multer");
+require("dotenv").config();
 
-//@TODO validations + response status
-// exports.all = async function (req, res) {
-//   Model.find(req.query, function (err, item) {
-//     if (err) return next(err);
-//     res.send(item);
-//   });
-// };
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "../admin-view/public/uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  },
+});
 
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/png"
+  ) {
+    cb(null, true);
+  } else {
+    // rejects storing a file
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+  fileFilter: fileFilter,
+});
 
 exports.all = (req, res) => {
-  console.log(process.env)
   Model.find({})
     .populate("category") //Get by [ids]
     .exec((err, doc) => {
@@ -23,13 +45,23 @@ exports.all = (req, res) => {
 };
 
 exports.add = function (req, res) {
-  let body = { ...req.body };
-  let item = new Model(body);
-  item.save(function (err) {
-    if (err) {
-      return next(err);
-    }
-    res.send(200);
+  upload.single("file")(req, res, () => {
+    const body = { ...req.body };
+    // body.name = slugify(req.body.name, { lower: true });
+    const item =
+      req.file === undefined
+        ? new Model({ ...body })
+        : new Model({
+            ...body,
+            imageName: req.file.filename,
+            pictures: req.file.path,
+          });
+    item.save(function (err2) {
+      if (err2) {
+        return next(err2);
+      }
+      res.send(200);
+    });
   });
 };
 

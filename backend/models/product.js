@@ -7,7 +7,7 @@ let Model = new Schema(
     price: String,
     userId: String,
     company: String,
-
+    file: String,
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "SubCategory",

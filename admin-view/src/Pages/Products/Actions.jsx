@@ -23,6 +23,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchSubCategories } from 'src/utils/Operations'
 import { fetchCategories } from 'src/Redux/Actions'
 import { find, options } from '../../utils/utilities'
+import axios from 'axios'
+import ImageSelector from 'src/Shared/ImageSelector'
+import { Row } from 'reactstrap'
 
 const Actions = () => {
   const [name, setName] = useState('')
@@ -33,6 +36,18 @@ const Actions = () => {
   const [action, setAction] = useState('ADD')
   const [error, setError] = useState(false)
   const [categories, setCategories] = useState([])
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [displayImages, setDisplayImages] = useState([])
+  const [fields, setFields] = useState({
+    name: '',
+
+    imageData: [],
+  })
+
+  // const singleImagePaths = [];
+  //         singleImagePaths.push(
+  //           process.env.REACT_APP_API_URL + "/" + newprops.singleRecord.pictures
+  //         );
 
   const [selectedCategory, setSelectedCategory] = useState('')
   const navigate = useNavigate()
@@ -50,6 +65,12 @@ const Actions = () => {
       setCompany(company)
     })
   }
+
+  const onDrop = (pictureFiles, pictureDataURLs) => {
+    setDisplayImages(pictureDataURLs)
+    setFields({ ...fields, imageData: pictureFiles })
+  }
+
   // console.log(categories)
 
   // const subCategoriesOption = find(
@@ -118,15 +139,43 @@ const Actions = () => {
   }
 
   const handleSubmit = () => {
-    selectCallAction[action](selectUrl[action], {
-      name,
-      price,
-      company,
-      category: selectedCategory,
-    }).then((response) => {
-      if (response) navigate('/products')
-    })
+    // e.preventDefault()
+    const formData = new FormData()
+    formData.append('name', name)
+    formData.append('price', price)
+    formData.append('category', selectedCategory)
+    formData.append('company', company)
+    formData.append('file', selectedImage)
+    axios
+      .post(process.env.REACT_APP_API_URL + '/product/add', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          // authorization: `bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+        },
+      })
+
+      .then((res) => {
+        // console.log(res)
+        if (res) navigate('/products')
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    // selectCallAction[action](selectUrl[action], {
+    //   name,
+    //   price,
+    //   company,
+    //   if (response) navigate('/products')
+    //   category: selectedCategory,
+    // }).then((response) => {
+    // })
   }
+
+  // const handlePhoto = (e) => {
+  //   setPhoto(e.target.files[0])
+  // }
+
   const handleSelectCategory = (e) => {
     setSelectedCategory(e.value)
     // // fetch(e.value)
@@ -134,114 +183,110 @@ const Actions = () => {
     // setSubCategories(getSubCategories)
   }
 
+  const imageChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedImage(e.target.files[0])
+    }
+  }
+
+  const removeSelectedImage = () => {
+    setSelectedImage(null)
+  }
+
   return (
     <CContainer>
-      <CForm>
-        <p className="text-medium-emphasis">
-          {param.id ? 'Edit Your Product' : 'Create a new Product'}
-        </p>
-        <CRow>
-          <CCol lg={5} md={5} sm={12}>
-            <CInputGroup className="mb-3">
-              <CFormInput
-                placeholder="Enter Name"
-                type="text"
-                value={name}
+      <Row>
+        <CCol>
+          {' '}
+          <CForm encType="multipart/form-data">
+            <p className="text-medium-emphasis">
+              {param.id ? 'Edit Your Product' : 'Create a new Product'}
+            </p>
+            <CRow>
+              <CInputGroup className="mb-3">
+                <CFormInput
+                  placeholder="Enter Name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value)
+                  }}
+                />
+              </CInputGroup>
+            </CRow>
+            <CRow className="mb-3">
+              <Select
+                options={options(categories)}
                 onChange={(e) => {
-                  setName(e.target.value)
+                  handleSelectCategory(e)
                 }}
               />
-            </CInputGroup>
-          </CCol>
-        </CRow>
+            </CRow>
 
-        <CRow>
-          <CCol lg={5} md={5} sm={12}>
-            <Select
-              options={options(categories)}
-              onChange={(e) => {
-                handleSelectCategory(e)
-              }}
-            />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol lg={5} md={5} sm={12}>
-            <CInputGroup className="mb-4">
-              {/* <CFormInput
-                type="text"
-                placeholder="Enter Category"
-                value={category}
-                onChange={(e) => {
-                  setCategory(e.target.value)
-                }}
-              /> */}
-            </CInputGroup>
-          </CCol>
-        </CRow>
+            <CRow className="mb-4">
+              <CInputGroup>
+                <CFormInput
+                  type="text"
+                  placeholder="Enter price"
+                  value={price}
+                  onChange={(e) => {
+                    setPrice(e.target.value)
+                  }}
+                />
+              </CInputGroup>
+            </CRow>
+            <CRow className="mb-4">
+              <CInputGroup>
+                <CFormInput
+                  type="text"
+                  placeholder="Enter Company"
+                  value={company}
+                  onChange={(e) => {
+                    setCompany(e.target.value)
+                  }}
+                />
+              </CInputGroup>
+            </CRow>
 
-        <CRow>
-          <CCol lg={5} md={5} sm={12}>
-            <CInputGroup className="mb-4">
-              <CFormInput
-                type="text"
-                placeholder="Enter price"
-                value={price}
-                onChange={(e) => {
-                  setPrice(e.target.value)
-                }}
-              />
-            </CInputGroup>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol lg={5} md={5} sm={12}>
-            <CInputGroup className="mb-4">
-              <CFormInput
-                type="text"
-                placeholder="Enter Company"
-                value={company}
-                onChange={(e) => {
-                  setCompany(e.target.value)
-                }}
-              />
-            </CInputGroup>
-          </CCol>
-        </CRow>
+            <CRow className="mt-4">
+              <input accept="image/*" type="file" onChange={imageChange} />
+            </CRow>
 
-        <CRow>
-          <CCol lg={5} md={5} sm={12}>
-            <div className="brand-name">
-              {/* <select
-                onChange={(e) => {
-                  setSelectedSubCategory(e.target.value)
+            <CRow className="mt-4">
+              <CButton
+                onClick={() => {
+                  handleSubmit()
                 }}
+                color="primary"
+                className="px-4"
               >
-                {options(subCategories).map((i) => (
-                  <option key={i.value}>
-                    {i.label}
-                  </option>
-                ))}
-              </select> */}
-            </div>
-          </CCol>
-        </CRow>
-        <CRow className="mt-4">
-          <CCol xs={6}>
-            <CButton
-              onClick={() => {
-                handleSubmit()
-              }}
-              color="primary"
-              className="px-4"
-            >
-              {action == 'ADD' ? 'Add' : 'Edit'} Product
-            </CButton>
-          </CCol>
-        </CRow>
-      </CForm>
+                {action == 'ADD' ? 'Add' : 'Edit'} Product
+              </CButton>
+            </CRow>
+          </CForm>
+        </CCol>
+        <CCol>
+          {/* <ImageUploader
+            withIcon={false}
+            singleImage={true}
+            defaultImage={displayImages}
+            buttonText="Choose image"
+            buttonClassName="choose_image"
+            // disabled={true}
+            onChange={onDrop}
+            imgExtension={['.jpg', '.png']}
+            maxFileSize={5242880}
+            withPreview={true}
+          /> */}
+          {selectedImage && (
+            <ImageSelector
+              selectedImage={selectedImage}
+              removeSelectedImage={removeSelectedImage}
+            />
+          )}
+        </CCol>
+      </Row>
     </CContainer>
-    // </div>
   )
 }
 

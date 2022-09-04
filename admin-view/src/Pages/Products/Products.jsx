@@ -68,6 +68,16 @@ const Products = () => {
       sortable: true,
     },
     {
+      name: 'Image',
+      button: true,
+      cell: (row) => (
+        <div className="d-flex gap-2">
+          {console.log(row.imageName)}
+          <img src={`${process.env.PUBLIC_URL}/uploads/${row.imageName}`} width="50px" />
+        </div>
+      ),
+    },
+    {
       name: 'Action',
       button: true,
       cell: (row) => (

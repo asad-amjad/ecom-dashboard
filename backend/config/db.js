@@ -1,2 +1,5 @@
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost:27017/e-commerce");
+require("dotenv").config();
+
+const uri = process.env.ATLAS_URI;
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
