@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../admin-view/public/uploads/");
+    cb(null, "./uploads/");
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + file.originalname);
@@ -49,13 +49,14 @@ exports.add = function (req, res) {
     const body = { ...req.body };
     // body.name = slugify(req.body.name, { lower: true });
     const item =
-      req.file === undefined
-        ? new Model({ ...body })
-        : new Model({
-            ...body,
-            imageName: req.file.filename,
-            pictures: req.file.path,
-          });
+      // req.file === undefined
+      //   ? new Model({ ...body })
+      //   :
+      new Model({
+        ...body,
+        imageName: req.file.filename,
+        pictures: req.file.path,
+      });
     item.save(function (err2) {
       if (err2) {
         return next(err2);

@@ -13,6 +13,7 @@ const jwtKey = "e-comm";
 
 app.use(express.json());
 app.use(cors());
+app.use('/uploads', express.static('uploads'));
 
 app.use("/user", user);
 app.use("/product", product);

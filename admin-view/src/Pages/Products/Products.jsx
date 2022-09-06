@@ -72,8 +72,7 @@ const Products = () => {
       button: true,
       cell: (row) => (
         <div className="d-flex gap-2">
-          {console.log(row.imageName)}
-          <img src={`${process.env.PUBLIC_URL}/uploads/${row.imageName}`} width="50px" />
+          <img src={`${process.env.REACT_APP_API_URL}/uploads/${row.imageName}`} width="50px" />
         </div>
       ),
     },
